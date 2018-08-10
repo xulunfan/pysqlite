@@ -1,6 +1,6 @@
 /* cursor.c - the cursor type
  *
- * Copyright (C) 2004-2010 Gerhard H�ring <gh@ghaering.de>
+ * Copyright (C) 2004-2010 Gerhard Häring <gh@ghaering.de>
  *
  * This file is part of pysqlite.
  *
@@ -20,7 +20,11 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-
+//    Cursor 是每行的集合。
+//    你必须知道每一列的名称。
+//    你必须知道每一列的数据类型。
+//    Cursor 是一个随机的数据源。
+//    所有的数据都是通过下标取得。
 #include "cursor.h"
 #include "module.h"
 #include "util.h"
@@ -46,7 +50,7 @@ static pysqlite_StatementKind detect_statement_type(char* statement)
 
     src = statement;
     /* skip over whitepace */
-    while (*src == '\r' || *src == '\n' || *src == ' ' || *src == '\t') {
+    while (*src == '\r' || *src == '\n' || *src == ' ' || *src == '\t') { // 跳过转义符
         src++;
     }
 
@@ -60,7 +64,7 @@ static pysqlite_StatementKind detect_statement_type(char* statement)
     }
 
     *dst = 0;
-
+    /*检测sql语句类型*/
     if (!strcmp(buf, "select")) {
         return STATEMENT_SELECT;
     } else if (!strcmp(buf, "insert")) {
@@ -75,7 +79,7 @@ static pysqlite_StatementKind detect_statement_type(char* statement)
         return STATEMENT_OTHER;
     }
 }
-
+//init
 static int pysqlite_cursor_init(pysqlite_Cursor* self, PyObject* args, PyObject* kwargs)
 {
     pysqlite_Connection* connection;
@@ -123,7 +127,7 @@ static int pysqlite_cursor_init(pysqlite_Cursor* self, PyObject* args, PyObject*
 
     return 0;
 }
-
+/*释放内存*/
 static void pysqlite_cursor_dealloc(pysqlite_Cursor* self)
 {
     int rc;
@@ -293,7 +297,7 @@ static PyObject* pysqlite_unicode_from_string(const char* val_str, Py_ssize_t nb
 
 /*
  * Returns a row from the currently active SQLite statement
- *
+ * 20180810
  * Precondidition:
  * - sqlite3_step() has been called before and it returned SQLITE_ROW.
  */
@@ -474,7 +478,7 @@ PyObject* _pysqlite_query_execute(pysqlite_Cursor* self, int multiple, PyObject*
     int allow_8bit_chars;
 
     if (!check_cursor(self)) {
-        goto error;
+        goto error;//goto!
     }
 
     self->locked = 1;
